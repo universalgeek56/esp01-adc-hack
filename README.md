@@ -1,6 +1,6 @@
 # ESP-01 ADC Mod
 
-> ESP-01 is **the only ESP module with DIP pins**, one of the most compact ESP boards, with **4 accessible pins** (with some limitations). However, the **lack of ADC** strongly limits its use in autonomous or analog projects.
+> ESP-01 is **the only ESP module with DIP pins**, one of the most compact ESP boards, exposing just **4 accessible pins** (with some limitations). However, the **lack of an accessible ADC** severely limits its use in autonomous or analog projects.
 > 
 > The **ESP8266 is significantly more powerful than Arduino Uno/Nano**, with built-in Wi-Fi and vastly more memory, and there is a **huge number of ready-made modules** designed specifically for it.
 

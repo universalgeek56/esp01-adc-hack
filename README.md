@@ -27,7 +27,7 @@ This repository documents a simple hardware modification for ESP-01 modules that
 
 **All soldering was done using a regular soldering iron, lenses, and three hands—no hot air, no microscope.**
 
-![Soldering process](img/Soldering.jpg)
+![Soldering process](img/Soldering.JPG)
 
 ---
 

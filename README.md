@@ -1,7 +1,5 @@
 # ESP-01 ADC Mod
 
-Вот аккуратно отформатированный и логически цельный вариант, без «разрыва» предложения:
-
 > ESP-01 is **the only ESP module with DIP pins**, one of the most compact ESP boards, with **4 accessible pins** (with some limitations). However, the **lack of ADC** strongly limits its use in autonomous or analog projects.
 > 
 > The **ESP8266 is significantly more powerful than Arduino Uno/Nano**, with built-in Wi-Fi and vastly more memory, and there is a **huge number of ready-made modules** designed specifically for it.
@@ -26,7 +24,7 @@ This repository documents a simple hardware modification for ESP-01 modules that
 
 **All soldering was done using a regular soldering iron, lenses, and three hands—no hot air, no microscope.**
 
-![Soldering process](img/soldering.jpg)
+![Soldering process](img/Soldering.JPG)
 
 ---
 

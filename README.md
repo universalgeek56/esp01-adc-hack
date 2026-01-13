@@ -1,4 +1,3 @@
-
 # ESP-01 ADC Mod
 
 Вот аккуратно отформатированный и логически цельный вариант, без «разрыва» предложения:
@@ -54,5 +53,67 @@ This repository documents a simple hardware modification for ESP-01 modules that
 - Verify connections with a multimeter before powering up
 
 This modification allows reusing ESP-01 modules in modern low-power and analog projects instead of replacing them with larger ESP-12 or ESP32 boards.
+
+---
+
+---
+
+## 🔌 ESP8266 ADC voltage divider cheat-sheet
+
+**ESP8266 ADC range: 0…1.0 V**  
+Anything above **must** be scaled down with a resistor divider.
+
+### 📐 Divider formula
+
+```
+Vadc = Vin × R2 / (R1 + R2)
+```
+
+---
+
+### 📊 Common voltage dividers (standard resistors)
+
+| Vin max | R1 (top) | R2 (bottom) | Vadc @ Vin | Notes                   |
+| ------- | -------- | ----------- | ---------- | ----------------------- |
+| 1.0 V   | —        | —           | 1.0 V      | No divider needed       |
+| 3.3 V   | 22 kΩ    | 10 kΩ       | ≈ 1.03 V   | OK in practice          |
+| 5.0 V   | 39 kΩ    | 10 kΩ       | ≈ 1.02 V   | Classic                 |
+| 12 V    | 100 kΩ   | 10 kΩ       | ≈ 1.09 V   | Borderline              |
+| 12 V    | 110 kΩ   | 10 kΩ       | ≈ 1.00 V   | Safer choice            |
+| 15 V    | 150 kΩ   | 10 kΩ       | ≈ 0.94 V   | Safe, slight range loss |
+
+👉 **R2 = 10 kΩ** chosen as a convenient baseline  
+👉 Values are from common E12/E24 series
+
+---
+
+### 🔧 ASCII schematic
+
+```
+ Vin ── R1 ──┬── ADC (ESP8266)
+             |
+             R2
+             |
+            GND
+```
+
+**Optional (recommended for noisy sources):**
+
+```
+ADC ── 100 nF ── GND
+```
+
+---
+
+### ⚠️ Notes (worth keeping)
+
+- ESP8266 ADC is **not 3.3 V tolerant**
+
+- Keep divider impedance reasonable  
+  (total resistance ≈ 50–200 kΩ works well)
+
+- Avoid mega-ohm dividers — ADC input gets unstable
+
+- For battery monitoring, this setup is more than accurate enough
 
 ---

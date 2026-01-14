@@ -115,3 +115,87 @@ ADC ── 100 nF ── GND
 - For battery monitoring, this setup is more than accurate enough
 
 ---
+
+## ESP-01 ADC Hack — Minimal, non-blocking, WDT-friendly
+
+```cpp
+/*
+  ESP-01 ADC Hack — read analog signals on the module that didn’t deserve an ADC
+  Non-blocking, WDT-friendly, EMA smoothing, with a pinch of despair
+  2026 — still soldering a wire directly to the crystal. Beauty!
+
+  Author: the human who burned 3 modules so you don’t burn the fourth
+*/
+
+const float EMA_ALPHA = 0.15f;    // smoothing: 0.1=very smooth, 0.3=jerky like post-deadline nerves
+float adcEMA = 0.0f;              // EMA accumulator, initially garbage (like my life before coffee)
+
+// Voltage divider — classic 10k+10k because resistors are everywhere
+const float R1 = 10000.0f;        // top leg (to Vin or 3.3V)
+const float R2 = 10000.0f;        // bottom leg (to GND, NTC, or photoresistor)
+
+const float ADC_MAX  = 1024.0f;   // 10-bit ADC
+const float ADC_VREF = 1.0f;      // ESP8266 ADC reference voltage (TOUT pin)
+
+// Sampling interval
+const uint32_t SAMPLE_INTERVAL_MS = 500;
+uint32_t lastSample = 0;
+bool firstADC = true;
+
+/* ADC function */
+void readADC() {
+  int raw = analogRead(A0);
+
+  if (firstADC) {
+    adcEMA = (float)raw;
+    firstADC = false;
+  } else {
+    adcEMA = EMA_ALPHA * raw + (1.0f - EMA_ALPHA) * adcEMA; // EMA smoothing
+  }
+
+  float vPin = adcEMA / ADC_MAX * ADC_VREF;
+  float vIn  = vPin * (R1 + R2) / R2;
+
+  // NTC 10k, β=3950 — classic
+  float rNTC = R1 * vPin / (ADC_VREF - vPin + 0.0001f);
+  if (rNTC < 100.0f) rNTC = 100.0f;  // protect from disconnected sensor
+  float tempC = 1.0f / (1.0f/298.15f + log(rNTC / 10000.0f)/3950.0f) - 273.15f;
+
+  Serial.printf("ADC:%4d | EMA:%6.1f | Vin:%5.2f V | NTC:%6.1f°C | rNTC:%7.0f Ω\n",
+                raw, adcEMA, vIn, tempC, rNTC);
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(300); // let Serial settle
+  Serial.println("\n=== ESP-01 ADC FrankenHack v1.2 ===");
+  firstADC = true;
+}
+
+void loop() {
+  uint32_t now = millis();
+
+  if (now - lastSample >= SAMPLE_INTERVAL_MS) {
+    lastSample = now;
+    readADC();
+  }
+
+  // skip the brakes (delay); feed the Watch Dogs Cerbers with yield();))
+  yield(); // non-blocking, WDT-friendly, Cerbers stay happy
+}
+```
+
+---
+
+### 🔹 Features
+
+* Fully **non-blocking**, **WDT-safe** (`yield()` instead of `delay()`)
+* EMA filter for smooth ADC readings
+* Voltage divider for battery, NTC, photoresistors
+* Examples: battery voltage, NTC thermistor, LDR
+* Ready for **deep sleep** and parallel Wi-Fi / MQTT / Telegram logic
+
+---
+
+
+

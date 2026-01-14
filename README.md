@@ -180,7 +180,7 @@ void loop() {
     readADC();
   }
 
-  // skip the brakes (delay); feed the Watch Dogs Cerbers with yield();))
+  // skip the brakes delay();) feed the Watch Dogs Cerbers with yield();))
   yield(); // WDT Cerbers happy — ESP-49.7-days overflow? Next Y2K? No problem
 }
 ```

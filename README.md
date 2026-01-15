@@ -168,7 +168,7 @@ void readADC() {
 void setup() {
   Serial.begin(115200);
   delay(300); // let Serial settle
-  Serial.println("\n=== ESP-01 ADC FrankenHack v1.2 ===");
+  Serial.println("=== ESP-01 ADC FrankenHack v101.0 (approx, so far) ===");
   firstADC = true;
 }
 
